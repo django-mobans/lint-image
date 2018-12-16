@@ -1,0 +1,18 @@
+sudo: false
+dist: xenial
+language: generic
+services: docker
+
+env:
+  global:
+    - IMAGE_NAME=django-mobans-lint-image:this
+
+install:
+  - hooks/build
+
+script:
+  - docker images
+  - docker run -v=$(pwd):/app --workdir=/app django-mobans-lint-image:this
+
+notifications:
+  email: false

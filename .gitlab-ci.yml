@@ -1,0 +1,40 @@
+stages:
+  - build
+  - test
+  - release
+
+image: docker:stable
+
+services:
+  - docker:stable-dind
+
+variables:
+  DOCKER_DRIVER: overlay
+
+before_script:
+  - export CURRENT_IMAGE_NAME="$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+  - export RELEASE_IMAGE_NAME="$CI_REGISTRY_IMAGE:latest"
+  - docker login -u gitlab-ci-token -p "$CI_JOB_TOKEN" "$CI_REGISTRY"
+
+build:image:
+  stage: build
+  script:
+    - docker build -t "$CURRENT_IMAGE_NAME" .
+    - docker push "$CURRENT_IMAGE_NAME"
+
+test:image:
+  stage: test
+  before_script:
+    - export CURRENT_IMAGE_NAME="$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+  script:
+    - docker pull "$CURRENT_IMAGE_NAME"
+    - docker run -v `pwd`:/app "$CURRENT_IMAGE_NAME"
+
+release:image:
+  stage: release
+  script:
+    - docker pull "$CURRENT_IMAGE_NAME"
+    - docker tag "$CURRENT_IMAGE_NAME" "$RELEASE_IMAGE_NAME"
+    - docker push "$RELEASE_IMAGE_NAME"
+  only:
+    - master

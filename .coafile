@@ -1,0 +1,11 @@
+[all]
+files = Dockerfile
+
+[all.docker]
+bears = DockerfileLintBear
+dockerfile_lint_rule_file = .dockerfile_lint_rules.yaml
+
+[all.commit]
+bears = GitCommitBear
+shortlog_trailing_period = False
+shortlog_regex = ([^:]*|[^:]+[^ ]: [A-Z0-9*].*)

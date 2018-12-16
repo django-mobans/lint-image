@@ -1,0 +1,35 @@
+image:
+  name: django-mobans-lint-image
+  version: 0.1
+  maintainer: jayvdb@gmail.com
+  python_version: 3.6
+  node_version: 10
+  apt:
+    - git
+    - shellcheck
+  pip:
+    - git+https://github.com/coala/coala
+    - git+https://github.com/coala/coala-bears
+  npm:
+    - dockerfile_lint
+  run:
+    cmd: coala --ci
+  omit:
+    expose: true
+
+requires:
+  - https://github.com/django-mobans/docker-mobans
+
+configuration:
+  configuration: .moban.yaml
+  template_dir:
+    - 'docker-mobans:.moban.dt/'
+targets:
+  - Dockerfile: Dockerfile.jj2
+  - .dockerfile_lint_rules.yaml: dockerfile_lint_rules.yaml.jj2
+  - .gitlab-ci.yml: gitlab-ci.yml.jj2
+  - .travis.yml: travis.yml.jj2
+copy:
+  - .coafile: .coafile
+  - .gitignore: .gitignore
+  - hooks/build: hooks/build
