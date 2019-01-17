@@ -20,6 +20,7 @@ build:image:
   stage: build
   script:
     - docker build -t "$CURRENT_IMAGE_NAME" .
+    - docker images
     - docker push "$CURRENT_IMAGE_NAME"
 
 test:image:
