@@ -2,14 +2,27 @@ image:
   name: django-mobans-lint-image
   version: 0.1
   maintainer: jayvdb@gmail.com
-  python_version: 3.6
+  parent: opensuse/tumbleweed
+  python_version: 3.7
   node_version: 10
-  apt:
-    - git
-    - shellcheck
-  pip:
-    - git+https://github.com/coala/coala
-    - git+https://github.com/coala/coala-bears
+  zypper:
+    sources:
+      - devel:languages:python
+      - home:jayvdb:coala
+    packages:
+      - coala
+      - nltk-data-averaged_perceptron_tagger
+      - nltk-data-punkt
+      - python3-coala-bears
+      - python3-autoflake
+      - python3-autopep8
+      - python3-eradicate
+      - python3-git-url-parse
+      - python3-nltk
+      - python3-pyflakes
+      - python3-yamllint
+      - git-core  # for git bears
+      - ShellCheck
   npm:
     - dockerfile_lint
   run:
@@ -17,13 +30,13 @@ image:
   omit:
     expose: true
 
-requires:
-  - https://github.com/django-mobans/docker-mobans
+#requires:
+  # ../docker-mobans
 
 configuration:
   configuration: .moban.yaml
   template_dir:
-    - 'docker-mobans:.moban.dt/'
+    - ../docker-mobans/.moban.dt/
 targets:
   - Dockerfile: Dockerfile.jj2
   - .dockerfile_lint_rules.yaml: dockerfile_lint_rules.yaml.jj2
