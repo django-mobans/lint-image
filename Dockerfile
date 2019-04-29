@@ -38,8 +38,10 @@ RUN \
   time zypper clean -a && \
   find /tmp -mindepth 1 -prune -exec rm -rf '{}' '+'
 
-RUN npm install -g \
-  dockerfile_lint \
+# Disable setuid support, as that requires user 'nobody'
+RUN sed -i'' -r 's/^(.+uidSupport = ).+$/\1false/' /usr/lib64/node_modules/npm10/node_modules/uid-number/uid-number.js \
+  && npm install -g \
+    dockerfile_lint \
   && npm cache clear --force
 
 CMD ["coala", "--ci"]
